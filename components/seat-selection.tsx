@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import {Fragment, useState} from 'react'
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
@@ -81,7 +81,7 @@ export function SeatSelection({ onSelect }: { onSelect: (seat: Seat | null) => v
         {/* Seats grid */}
         <div className="grid grid-cols-7 gap-1 sm:gap-2 p-2 sm:p-4 bg-gray-100 rounded-lg overflow-x-auto">
           {Array.from({ length: 30 }).map((_, rowIndex) => (
-            <React.Fragment key={rowIndex}>
+            <Fragment key={rowIndex}>
               {/* Row number */}
               <div className="flex items-center justify-center font-bold">
                 {rowIndex + 1}
@@ -112,7 +112,7 @@ export function SeatSelection({ onSelect }: { onSelect: (seat: Seat | null) => v
               {rowIndex * 6 + 3 === seats.indexOf(seats[rowIndex * 6 + 3]) && (
                 <div className="w-8"></div>
               )}
-            </React.Fragment>
+            </Fragment>
           ))}
         </div>
 

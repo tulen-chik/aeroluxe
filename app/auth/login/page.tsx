@@ -7,6 +7,7 @@ import { Card } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { supabase } from '@/lib/supabase'
+import {getCookie, setCookie} from '@/utils/cookies'
 
 export default function Login() {
   const router = useRouter()
@@ -20,15 +21,17 @@ export default function Login() {
     setLoading(true)
     setError(null)
 
+
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password,
       })
 
       if (error) throw error
+      else if (data) setCookie("supabaseSession", JSON.stringify(data.session))
 
-      router.push('/')
+      router.push('/profile')
     } catch (error) {
       setError(error instanceof Error ? error.message : 'An error occurred')
     } finally {
@@ -37,50 +40,50 @@ export default function Login() {
   }
 
   return (
-    <div className="max-w-md mx-auto">
-      <Card className="p-6">
-        <h1 className="text-2xl font-semibold mb-6 text-center">Вход</h1>
-        
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              required
-            />
-          </div>
-          
-          <div className="space-y-2">
-            <Label htmlFor="password">Пароль</Label>
-            <Input
-              id="password"
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
-          </div>
+      <div className="max-w-md mx-auto">
+        <Card className="p-6">
+          <h1 className="text-2xl font-semibold mb-6 text-center">Вход</h1>
 
-          {error && (
-            <p className="text-red-600 text-sm">{error}</p>
-          )}
+          <form onSubmit={handleLogin} className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="email">Email</Label>
+              <Input
+                  id="email"
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+              />
+            </div>
 
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? 'Вход...' : 'Войти'}
-          </Button>
+            <div className="space-y-2">
+              <Label htmlFor="password">Пароль</Label>
+              <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+              />
+            </div>
 
-          <p className="text-center text-sm text-gray-600">
-            Нет аккаунта?{' '}
-            <a href="/auth/register" className="text-rose-600 hover:underline">
-              Зарегистрироваться
-            </a>
-          </p>
-        </form>
-      </Card>
-    </div>
+            {error && (
+                <p className="text-red-600 text-sm">{error}</p>
+            )}
+
+            <Button type="submit" className="w-full" disabled={loading}>
+              {loading ? 'Вход...' : 'Войти'}
+            </Button>
+
+            <p className="text-center text-sm text-gray-600">
+              Нет аккаунта?{' '}
+              <a href="/auth/register" className="text-rose-600 hover:underline">
+                Зарегистрироваться
+              </a>
+            </p>
+          </form>
+        </Card>
+      </div>
   )
 }
 
